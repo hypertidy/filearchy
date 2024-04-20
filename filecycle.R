@@ -1,18 +1,22 @@
 
-dsn <- sds::wms_bluemarble_s3_tms()
-vrt <- vapour::vapour_vrt(dsn, overview = 3)
+# dsn <- sds::wms_bluemarble_s3_tms()
+# vrt <- vapour::vapour_vrt(dsn, overview = 3)
+
+dsn <- sprintf("vrt://%s?ovr=2&scale=true&ot=Byte", sds::gebco())
 info <- vapour::vapour_raster_info(vrt)
 library(grout)
 ## what level do we go to
 block <- 512
 library(gdalraster)
-nzooms <- 7
+nzooms <- max(which(info$dimension[1] / (2^(0:20)) >= block))
 l <- vector("list", nzooms)
 warp(dsn, tf <- tempfile(tmpdir = "/vsimem", fileext = ".vrt"),
      t_srs = "EPSG:3857", cl_arg = c("-ts", block, 0))
 base <- new(GDALRaster, tf)
 basesize <- c(base$getRasterXSize(), base$getRasterYSize())
-ex <- base$bbox()[c(1, 3, 2, 4)]
+ex <- base$bbox()[c(1, 3, 2, 4)]  ## here we have to limit to the global bounds
+ex[3] <- max(c(ex[3], -20037508.342789244))
+ex[4] <- min(c(ex[4], 20037508.342789244))
 for (i in seq_len(nzooms)) {
   isize <- basesize * 2^(i-1)
   print(isize)
@@ -42,7 +46,7 @@ library(furrr)
 options(parallelly.fork.enable = TRUE, future.rng.onMisuse = "ignore")
 plan(multicore)
 
-system.time({jk <- future_map(split(d, 1:nrow(d)), write_tile, dataset = dsn)})
+system.time({jk <- future_map(split(d, 1:nrow(d)), write_tile, dataset = dsn, basedir = "gebco")})
 plan(sequential)
 
 str(info)
