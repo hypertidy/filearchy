@@ -21,6 +21,13 @@ knitr::opts_chunk$set(
 
 The goal of filearchy is to generate pyramid tiled image directories. (Like gdal2tiles.py). 
 
+## TODO
+
+-[ ] we have `dry_run` in gdal_tiles() but I think it should be a separate function to render from the scheme
+-[ ] implement xyz vs tms mode (I think it's just nrow - row)
+-[ ] driver and file extension options
+-[ ] make it clear that byte-scaling is not mandatory, perfectly valid to have tiles of data (like (tiles-prod)[https://s3.amazonaws.com/elevation-tiles-prod/geotiff])
+
 ## Installation
 
 You can install the development version of filearchy from [GitHub](https://github.com/) with:
@@ -55,7 +62,35 @@ ds$close()
 m <- do.call(cbind, maps::map(plot = F)[1:2])
 m[m[,1] > 180, ] <- NA
 # library(gdalraster)
-# lines(gdalraster::transform_xy(m, srs_to = srs_to_wkt("EPSG:3857"), srs_from = srs_to_wkt("EPSG:4326")))
-lines(reproj::reproj_xy(m, "EPSG:3857", source = "EPSG:4326"), col = "firebrick")
+## we have to handle missing values 
+nas <- is.na(m[,1])
+xylines <- m
+library(gdalraster)
+xylines[!nas, ] <- gdalraster::transform_xy(m[!nas, ], 
+             srs_to = srs_to_wkt("EPSG:3857"), srs_from = srs_to_wkt("EPSG:4326"))
+lines(xylines)
 
+all(file.exists(tiles$path))
 ```
+
+Or, just do a dry_run: 
+
+```{r scheme-only}
+scheme <- gdal_tiles(dsn, dry_run = TRUE, nzoom = 5)
+ex <- c(min(scheme$xmin), max(scheme$xmax), min(scheme$ymin), max(scheme$ymax))
+plot(ex[1:2], ex[3:4], asp = 1)
+
+md <- dplyr::filter(scheme, zoom == round(mean(unique(zoom)) ))
+with(md, rect(xmin, ymin, xmax, ymax, border = "red", lwd = 3))
+
+mx <- dplyr::filter(scheme, zoom == max(zoom) )
+with(mx, rect(xmin, ymin, xmax, ymax))
+
+any(file.exists(scheme$path))
+```
+
+
+
+## Code of Conduct
+  
+Please note that the filearchy project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.

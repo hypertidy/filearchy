@@ -11,7 +11,8 @@ gdal_tiles(
   t_srs = "EPSG:3857",
   update = TRUE,
   output_dir = tempfile(),
-  overwrite = FALSE
+  overwrite = FALSE,
+  dry_run = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ gdal_tiles(
 \item{output_dir}{directory to write to, by default a tempdir is used}
 
 \item{overwrite}{clobber the output directory, \code{FALSE} is the default}
+
+\item{dry_run}{if \code{TRUE} only the scheme is built and returned as a data frame}
 }
 \value{
 the tile scheme, invisibly as a dataframe

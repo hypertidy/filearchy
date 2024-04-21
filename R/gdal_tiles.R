@@ -1,6 +1,6 @@
 ## write one tile, we can parallize this call
-write_tile <- function(tile, dataset, output_dir = tempdir(), overwrite = FALSE) {
-  path <- file.path(output_dir, tile$path)
+write_tile <- function(tile, dataset,  overwrite = FALSE) {
+  path <- tile$path
   if (!overwrite) {
     if (fs::file_exists(path)) return(NULL)
   }
@@ -19,6 +19,7 @@ write_tile <- function(tile, dataset, output_dir = tempdir(), overwrite = FALSE)
 #' @param update not implemented (please take care)
 #' @param output_dir directory to write to, by default a tempdir is used
 #' @param overwrite clobber the output directory, `FALSE` is the default
+#' @param dry_run if `TRUE` only the scheme is built and returned as a data frame
 #'
 #' @return the tile scheme, invisibly as a dataframe
 #' @export
@@ -34,13 +35,15 @@ write_tile <- function(tile, dataset, output_dir = tempdir(), overwrite = FALSE)
 #' tiles <- gdal_tiles(dsn)
 #' if (!interactive()) unlink(tiles$path)
 #' #future::plan(sequential)
-gdal_tiles <- function(dsn, nzoom = NULL, blocksize = 256L, t_srs = "EPSG:3857", update = TRUE, output_dir = tempfile(), overwrite = FALSE) {
+gdal_tiles <- function(dsn, nzoom = NULL, blocksize = 256L, t_srs = "EPSG:3857", update = TRUE, output_dir = tempfile(), overwrite = FALSE,
+                       dry_run = FALSE) {
  #browser()
    opt <- gdalraster::get_config_option("GDAL_PAM_ENABLED")
   gdalraster::set_config_option("GDAL_PAM_ENABLED", "NO")
   on.exit(gdalraster::set_config_option("GDAL_PAM_ENABLED", opt), add = TRUE)
 
-
+if (!dry_run) {
+  ## put all write-handling in here
   if (!overwrite) {
     if (file.exists(output_dir)) {
      stop("output_dir already exists, delete or set overwrite = TRUE")
@@ -48,7 +51,7 @@ gdal_tiles <- function(dsn, nzoom = NULL, blocksize = 256L, t_srs = "EPSG:3857",
   }
   unlink(output_dir, recursive = TRUE)
   dir.create(output_dir, showWarnings = FALSE)
-
+}
   ## we can't get info from gdalraster yet because it will run statistics
   ##info <- vapour::vapour_raster_info(dsn)
   ds <- new(gdalraster::GDALRaster, dsn)
@@ -66,12 +69,10 @@ gdal_tiles <- function(dsn, nzoom = NULL, blocksize = 256L, t_srs = "EPSG:3857",
   ex[3] <- max(c(ex[3], -20037508.342789244))
   ex[4] <- min(c(ex[4], 20037508.342789244))
 
-  filelist <- base$getFileList()
-  print(filelist)
-  #[1] "/vsimem/file70fd4d3a0623.vrt"
-  #[2] "/perm_storage/home/mdsumner/R/x86_64-pc-linux-gnu-library/4.3/filearchy/extdata/gebco_ovr5.vrt"
 
   base$close()
+  ## I'm a bit confused about this still
+  gdalraster::vsi_rmdir(dirname(tf))
   ## this would delete our source, so how do we only clean up the vsimem? do we?
   #unlink(filelist)
 
@@ -85,22 +86,20 @@ gdal_tiles <- function(dsn, nzoom = NULL, blocksize = 256L, t_srs = "EPSG:3857",
     ## we have to flip the rows (we need tms vs xyz)
     ti$tile_col_tms <- ti$tile_col - 1
     ti$tile_row_tms <- g$scheme$ntilesY - ti$tile_row
-    ti$path <- file.path(ti$zoom, ti$tile_col_tms, sprintf("%i.png", ti$tile_row_tms))
+
+    ti$path <- file.path(output_dir, ti$zoom, ti$tile_col_tms, sprintf("%i.png", ti$tile_row_tms))
     l[[i]] <- ti
   }
 
 
-
-
   d <- do.call(rbind, l)
+ if (dry_run) return(d)
 
   jk <- future_map(split(d, 1:nrow(d)), write_tile,
-                                dataset = dsn,
-                                output_dir = output_dir)
+                                dataset = dsn, overwrite = overwrite)
   print(sprintf("tiles in directory: %s", output_dir))
 
-  ## do we do this earlier?
-  d$path <- file.path(output_dir, d$path)
+
   invisible(d)
 
 }

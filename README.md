@@ -11,6 +11,15 @@
 The goal of filearchy is to generate pyramid tiled image directories.
 (Like gdal2tiles.py).
 
+## TODO
+
+-\[ \] we have `dry_run` in gdal_tiles() but I think it should be a
+separate function to render from the scheme -\[ \] implement xyz vs tms
+mode (I think it’s just nrow - row) -\[ \] driver and file extension
+options -\[ \] make it clear that byte-scaling is not mandatory,
+perfectly valid to have tiles of data (like
+(tiles-prod)\[<https://s3.amazonaws.com/elevation-tiles-prod/geotiff>\])
+
 ## Installation
 
 You can install the development version of filearchy from
@@ -32,32 +41,30 @@ library(filearchy)
 #library(future); plan(multicore)
 dsn <- system.file("extdata/gebco_ovr5.vrt", package = "filearchy", mustWork = TRUE)
 tiles <- gdal_tiles(dsn)
-#> [1] "/vsimem/file71922344929b1.vrt"                                                                 
-#> [2] "/perm_storage/home/mdsumner/R/x86_64-pc-linux-gnu-library/4.3/filearchy/extdata/gebco_ovr5.vrt"
-#> [1] "tiles in directory: /tmp/RtmpJu1hLW/file71922726e876e"
+#> [1] "tiles in directory: /tmp/Rtmp2nIrIT/file7446c724d8950"
 #plan(sequential)
 fs::dir_ls(dirname(dirname(dirname(tiles$path[1]))), recurse = TRUE, type = "f")
-#> /tmp/RtmpJu1hLW/file71922726e876e/0/0/0.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/1/0/0.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/1/0/1.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/1/1/0.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/1/1/1.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/2/0/0.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/2/0/1.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/2/0/2.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/2/0/3.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/2/1/0.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/2/1/1.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/2/1/2.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/2/1/3.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/2/2/0.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/2/2/1.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/2/2/2.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/2/2/3.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/2/3/0.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/2/3/1.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/2/3/2.png
-#> /tmp/RtmpJu1hLW/file71922726e876e/2/3/3.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/0/0/0.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/1/0/0.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/1/0/1.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/1/1/0.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/1/1/1.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/0/0.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/0/1.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/0/2.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/0/3.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/1/0.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/1/1.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/1/2.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/1/3.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/2/0.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/2/1.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/2/2.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/2/3.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/3/0.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/3/1.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/3/2.png
+#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/3/3.png
 
 gdalraster::createCopy("GTiff", tf <- tempfile(fileext = ".tif"), tiles$path[1])
 #> 0...10...20...30...40...50...60...70...80...90...100 - done.
@@ -75,8 +82,49 @@ ds$close()
 m <- do.call(cbind, maps::map(plot = F)[1:2])
 m[m[,1] > 180, ] <- NA
 # library(gdalraster)
-# lines(gdalraster::transform_xy(m, srs_to = srs_to_wkt("EPSG:3857"), srs_from = srs_to_wkt("EPSG:4326")))
-lines(reproj::reproj_xy(m, "EPSG:3857", source = "EPSG:4326"), col = "firebrick")
+## we have to handle missing values 
+nas <- is.na(m[,1])
+xylines <- m
+library(gdalraster)
+#> GDAL 3.9.0dev-cb4d30f56d, released 2024/04/15 (debug build), GEOS 3.12.1, PROJ 9.3.1
+xylines[!nas, ] <- gdalraster::transform_xy(m[!nas, ], 
+             srs_to = srs_to_wkt("EPSG:3857"), srs_from = srs_to_wkt("EPSG:4326"))
+lines(xylines)
 ```
 
 <img src="man/figures/README-example-1.png" width="100%" />
+
+``` r
+
+all(file.exists(tiles$path))
+#> [1] TRUE
+```
+
+Or, just do a dry_run:
+
+``` r
+scheme <- gdal_tiles(dsn, dry_run = TRUE, nzoom = 5)
+ex <- c(min(scheme$xmin), max(scheme$xmax), min(scheme$ymin), max(scheme$ymax))
+plot(ex[1:2], ex[3:4], asp = 1)
+
+md <- dplyr::filter(scheme, zoom == round(mean(unique(zoom)) ))
+with(md, rect(xmin, ymin, xmax, ymax, border = "red", lwd = 3))
+
+mx <- dplyr::filter(scheme, zoom == max(zoom) )
+with(mx, rect(xmin, ymin, xmax, ymax))
+```
+
+<img src="man/figures/README-scheme-only-1.png" width="100%" />
+
+``` r
+
+any(file.exists(scheme$path))
+#> [1] FALSE
+```
+
+## Code of Conduct
+
+Please note that the filearchy project is released with a [Contributor
+Code of
+Conduct](https://contributor-covenant.org/version/2/1/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
