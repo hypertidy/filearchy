@@ -1,0 +1,60 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# filearchy
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/hypertidy/filearchy/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/hypertidy/filearchy/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
+The goal of filearchy is to generate pyramid tiled image directories. (Like gdal2tiles.py). 
+
+## Installation
+
+You can install the development version of filearchy from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("hypertidy/filearchy")
+```
+
+## Example
+
+
+```{r example}
+library(filearchy)
+#options(parallelly.fork.enable = TRUE, future.rng.onMisuse = "ignore")
+#library(future); plan(multicore)
+dsn <- sprintf("vrt://%s?ovr=5&ot=Byte&scale=true", "/vsicurl/https://gebco2023.s3.valeria.science/gebco_2023_land_cog.tif")
+tiles <- gdal_tiles(dsn)
+#plan(sequential)
+fs::dir_ls(dirname(dirname(dirname(tiles$path[1]))), recurse = TRUE, type = "f")
+
+gdalraster::createCopy("GTiff", tf <- tempfile(fileext = ".tif"), tiles$path[1])
+
+ds <- new(gdalraster::GDALRaster, tf, read_only = FALSE)
+## tiles are 256x256 by default
+w <- pi *  6378137
+
+ds$setGeoTransform(c(-w, w * 2 / 256, 0, w, 0, -w * 2 / 256))
+gdalraster::plot_raster(ds, bands = 1:3)
+ds$close()
+m <- do.call(cbind, maps::map(plot = F)[1:2])
+m[m[,1] > 180, ] <- NA
+# library(gdalraster)
+# lines(gdalraster::transform_xy(m, srs_to = srs_to_wkt("EPSG:3857"), srs_from = srs_to_wkt("EPSG:4326")))
+lines(reproj::reproj_xy(m, "EPSG:3857", source = "EPSG:4326"), col = "firebrick")
+
+```

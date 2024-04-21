@@ -2,3 +2,7 @@
 ^\.Rproj\.user$
 ^ovr_g2t$
 ^tiles$
+^LICENSE\.md$
+^README\.Rmd$
+^gebco$
+^\.github$
