@@ -13,12 +13,23 @@ The goal of filearchy is to generate pyramid tiled image directories.
 
 ## TODO
 
--\[ \] we have `dry_run` in gdal_tiles() but I think it should be a
-separate function to render from the scheme -\[ \] implement xyz vs tms
-mode (I think it’s just nrow - row) -\[ \] driver and file extension
-options -\[ \] make it clear that byte-scaling is not mandatory,
-perfectly valid to have tiles of data (like
-(tiles-prod)\[<https://s3.amazonaws.com/elevation-tiles-prod/geotiff>\])
+- we have `dry_run` in gdal_tiles() but I think it should be a separate
+  function to render from the scheme
+- implement xyz vs tms mode (I think it’s just nrow - row)
+- driver and file extension options
+- make it clear that byte-scaling is not mandatory, perfectly valid to
+  have tiles of data (like
+  (tiles-prod)\[<https://s3.amazonaws.com/elevation-tiles-prod/geotiff>\])
+- add palette-handling example (or point to one, probably a gdalraster
+  vignette on byte-scaling and attach palette and expand)
+- add arbitrary zoom levels not just a max
+- add resampling option
+- add s_srs (but what about general non-georeferenced? why do we have
+  s_srs?)
+- discuss parallel write, how to enable
+- exclude transparent tiles (not sure how, do we detect zero-png/jpg?)
+- resume (don’t rewrite non-missing)
+- profile mercator/geodetic/raster (not sure what raster is?)
 
 ## Installation
 
@@ -41,30 +52,30 @@ library(filearchy)
 #library(future); plan(multicore)
 dsn <- system.file("extdata/gebco_ovr5.vrt", package = "filearchy", mustWork = TRUE)
 tiles <- gdal_tiles(dsn)
-#> [1] "tiles in directory: /tmp/Rtmp2nIrIT/file7446c724d8950"
+#> [1] "tiles in directory: /tmp/RtmpHyIUHp/file74e596a4916a6"
 #plan(sequential)
 fs::dir_ls(dirname(dirname(dirname(tiles$path[1]))), recurse = TRUE, type = "f")
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/0/0/0.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/1/0/0.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/1/0/1.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/1/1/0.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/1/1/1.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/0/0.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/0/1.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/0/2.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/0/3.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/1/0.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/1/1.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/1/2.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/1/3.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/2/0.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/2/1.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/2/2.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/2/3.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/3/0.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/3/1.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/3/2.png
-#> /tmp/Rtmp2nIrIT/file7446c724d8950/2/3/3.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/0/0/0.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/1/0/0.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/1/0/1.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/1/1/0.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/1/1/1.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/2/0/0.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/2/0/1.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/2/0/2.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/2/0/3.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/2/1/0.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/2/1/1.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/2/1/2.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/2/1/3.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/2/2/0.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/2/2/1.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/2/2/2.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/2/2/3.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/2/3/0.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/2/3/1.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/2/3/2.png
+#> /tmp/RtmpHyIUHp/file74e596a4916a6/2/3/3.png
 
 gdalraster::createCopy("GTiff", tf <- tempfile(fileext = ".tif"), tiles$path[1])
 #> 0...10...20...30...40...50...60...70...80...90...100 - done.
