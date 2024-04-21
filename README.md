@@ -15,6 +15,10 @@ The goal of filearchy is to generate pyramid tiled image directories.
 
 - we have `dry_run` in gdal_tiles() but I think it should be a separate
   function to render from the scheme
+- (*somehow*) detect the case when warp is not needed (3857-\>3857 or
+  4326-\>4326) and use RasterIO (translate) instead, it should be a bit
+  faster - but how to encode that in the scheme vs. the run?
+- what is profile ‘raster’? just tile in the input_srs?  
 - implement xyz vs tms mode (I think it’s just nrow - row)
 - driver and file extension options
 - make it clear that byte-scaling is not mandatory, perfectly valid to
@@ -53,30 +57,30 @@ library(filearchy)
 #library(future); plan(multicore)
 dsn <- system.file("extdata/gebco_ovr5.vrt", package = "filearchy", mustWork = TRUE)
 tiles <- gdal_tiles(dsn)
-#> [1] "tiles in directory: /tmp/RtmpavyH65/file751d648f07bdd"
+#> [1] "tiles in directory: /tmp/Rtmps0OJ1N/file7536b6b41bcbc"
 #plan(sequential)
 fs::dir_ls(dirname(dirname(dirname(tiles$path[1]))), recurse = TRUE, type = "f")
-#> /tmp/RtmpavyH65/file751d648f07bdd/0/0/0.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/1/0/0.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/1/0/1.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/1/1/0.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/1/1/1.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/2/0/0.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/2/0/1.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/2/0/2.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/2/0/3.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/2/1/0.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/2/1/1.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/2/1/2.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/2/1/3.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/2/2/0.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/2/2/1.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/2/2/2.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/2/2/3.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/2/3/0.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/2/3/1.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/2/3/2.png
-#> /tmp/RtmpavyH65/file751d648f07bdd/2/3/3.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/0/0/0.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/1/0/0.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/1/0/1.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/1/1/0.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/1/1/1.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/0/0.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/0/1.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/0/2.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/0/3.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/1/0.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/1/1.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/1/2.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/1/3.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/2/0.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/2/1.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/2/2.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/2/3.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/3/0.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/3/1.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/3/2.png
+#> /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/3/3.png
 
 gdalraster::createCopy("GTiff", tf <- tempfile(fileext = ".tif"), tiles$path[1])
 #> 0...10...20...30...40...50...60...70...80...90...100 - done.
