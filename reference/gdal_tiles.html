@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">filearchy</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9001</span>
       </span>
     </div>
 
@@ -97,18 +97,14 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#p &lt;- system.file("help/figures/logo.png", package = "survival", mustWork = TRUE)</span></span></span>
-<span class="r-in"><span><span class="co">#ss &lt;- paste0(c("vrt://%s?outsize=500%s,500%s&amp;a_ullr=",</span></span></span>
-<span class="r-in"><span> <span class="co">#  "-20037508,20037508,20037508,-20037508&amp;a_srs=EPSG:3857"), collapse = "")</span></span></span>
-<span class="r-in"><span> <span class="co">#dsn &lt;- sprintf(ss, p, "%", "%")</span></span></span>
-<span class="r-in"><span> <span class="va">dsn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"vrt://%s?ovr=5&amp;ot=Byte&amp;scale=true"</span>,</span></span>
-<span class="r-in"><span>  <span class="st">"/vsicurl/https://gebco2023.s3.valeria.science/gebco_2023_land_cog.tif"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dsn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/gebco_ovr5.vrt"</span>, package <span class="op">=</span> <span class="st">"filearchy"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## parallelize here</span></span></span>
 <span class="r-in"><span><span class="co">#future::plan(multicore)</span></span></span>
 <span class="r-in"><span><span class="va">tiles</span> <span class="op">&lt;-</span> <span class="fu">gdal_tiles</span><span class="op">(</span><span class="va">dsn</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> open raster failed</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "/vsimem/file1ad8e26f9e4.vrt"                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "/home/runner/work/_temp/Library/filearchy/extdata/gebco_ovr5.vrt"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tiles in directory: /tmp/RtmpKHNuXK/file1ad866863462"</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">tiles</span><span class="op">$</span><span class="va">path</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'tiles' not found</span>
 <span class="r-in"><span><span class="co">#future::plan(sequential)</span></span></span>
 </code></pre></div>
     </div>
