@@ -67,7 +67,21 @@
 <div class="section level2">
 <h2 id="todo">TODO<a class="anchor" aria-label="anchor" href="#todo"></a>
 </h2>
-<p>-[ ] we have <code>dry_run</code> in gdal_tiles() but I think it should be a separate function to render from the scheme -[ ] implement xyz vs tms mode (I think it’s just nrow - row) -[ ] driver and file extension options -[ ] make it clear that byte-scaling is not mandatory, perfectly valid to have tiles of data (like (tiles-prod)[<a href="https://s3.amazonaws.com/elevation-tiles-prod/geotiff" class="external-link uri">https://s3.amazonaws.com/elevation-tiles-prod/geotiff</a>])</p>
+<ul>
+<li>we have <code>dry_run</code> in gdal_tiles() but I think it should be a separate function to render from the scheme</li>
+<li>implement xyz vs tms mode (I think it’s just nrow - row)</li>
+<li>driver and file extension options</li>
+<li>make it clear that byte-scaling is not mandatory, perfectly valid to have tiles of data like <a href="https://registry.opendata.aws/terrain-tiles/" class="external-link">tiles-prod</a> and see <a href="https://hypertidy.github.io/sds/" class="external-link">sds::wms_amazon_elevation()</a>
+</li>
+<li>add palette-handling example (or point to one, probably a gdalraster vignette on byte-scaling and attach palette and expand)</li>
+<li>add arbitrary zoom levels not just a max</li>
+<li>add resampling option</li>
+<li>add s_srs (but what about general non-georeferenced? why do we have s_srs?)</li>
+<li>discuss parallel write, how to enable</li>
+<li>exclude transparent tiles (not sure how, do we detect zero-png/jpg?)</li>
+<li>resume (don’t rewrite non-missing)</li>
+<li>profile mercator/geodetic/raster (not sure what raster is?)</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -87,30 +101,30 @@
 <span><span class="co">#library(future); plan(multicore)</span></span>
 <span><span class="va">dsn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/gebco_ovr5.vrt"</span>, package <span class="op">=</span> <span class="st">"filearchy"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">tiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gdal_tiles.html">gdal_tiles</a></span><span class="op">(</span><span class="va">dsn</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tiles in directory: /tmp/Rtmp2nIrIT/file7446c724d8950"</span></span>
+<span><span class="co">#&gt; [1] "tiles in directory: /tmp/RtmpavyH65/file751d648f07bdd"</span></span>
 <span><span class="co">#plan(sequential)</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_ls.html" class="external-link">dir_ls</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">tiles</span><span class="op">$</span><span class="va">path</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, recurse <span class="op">=</span> <span class="cn">TRUE</span>, type <span class="op">=</span> <span class="st">"f"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/0/0/0.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/1/0/0.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/1/0/1.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/1/1/0.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/1/1/1.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/2/0/0.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/2/0/1.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/2/0/2.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/2/0/3.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/2/1/0.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/2/1/1.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/2/1/2.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/2/1/3.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/2/2/0.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/2/2/1.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/2/2/2.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/2/2/3.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/2/3/0.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/2/3/1.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/2/3/2.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmp2nIrIT/file7446c724d8950/2/3/3.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/0/0/0.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/1/0/0.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/1/0/1.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/1/1/0.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/1/1/1.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/2/0/0.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/2/0/1.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/2/0/2.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/2/0/3.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/2/1/0.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/2/1/1.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/2/1/2.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/2/1/3.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/2/2/0.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/2/2/1.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/2/2/2.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/2/2/3.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/2/3/0.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/2/3/1.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/2/3/2.png</span></span>
+<span><span class="co">#&gt; /tmp/RtmpavyH65/file751d648f07bdd/2/3/3.png</span></span>
 <span></span>
 <span><span class="fu">gdalraster</span><span class="fu">::</span><span class="fu"><a href="https://usdaforestservice.github.io/gdalraster/reference/createCopy.html" class="external-link">createCopy</a></span><span class="op">(</span><span class="st">"GTiff"</span>, <span class="va">tf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".tif"</span><span class="op">)</span>, <span class="va">tiles</span><span class="op">$</span><span class="va">path</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 0...10...20...30...40...50...60...70...80...90...100 - done.</span></span>
