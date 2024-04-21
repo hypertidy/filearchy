@@ -26,7 +26,7 @@ The goal of filearchy is to generate pyramid tiled image directories. (Like gdal
 * we have `dry_run` in gdal_tiles() but I think it should be a separate function to render from the scheme
 * implement xyz vs tms mode (I think it's just nrow - row)
 * driver and file extension options
-* make it clear that byte-scaling is not mandatory, perfectly valid to have tiles of data (like (tiles-prod)[https://s3.amazonaws.com/elevation-tiles-prod/geotiff])
+* make it clear that byte-scaling is not mandatory, perfectly valid to have tiles of data like [tiles-prod](https://registry.opendata.aws/terrain-tiles/) and see [sds::wms_amazon_elevation()](https://hypertidy.github.io/sds/)
 * add palette-handling example (or point to one, probably a gdalraster vignette on byte-scaling and attach palette and expand)
 * add arbitrary zoom levels not just a max
 * add resampling option
