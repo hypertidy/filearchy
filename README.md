@@ -23,36 +23,41 @@ devtools::install_github("hypertidy/filearchy")
 
 ## Example
 
+‘gebco_ovr5.vrt’ is a pre-prepared version of GEBCO 2023 elevation COG
+that has been Byte-scaled and reduced to the zoom overview 5
+
 ``` r
 library(filearchy)
 #options(parallelly.fork.enable = TRUE, future.rng.onMisuse = "ignore")
 #library(future); plan(multicore)
-dsn <- sprintf("vrt://%s?ovr=5&ot=Byte&scale=true", "/vsicurl/https://gebco2023.s3.valeria.science/gebco_2023_land_cog.tif")
+dsn <- system.file("extdata/gebco_ovr5.vrt", package = "filearchy", mustWork = TRUE)
 tiles <- gdal_tiles(dsn)
-#> [1] "tiles in directory: /tmp/RtmpdO9jh2/file6c22479521953"
+#> [1] "/vsimem/file71922344929b1.vrt"                                                                 
+#> [2] "/perm_storage/home/mdsumner/R/x86_64-pc-linux-gnu-library/4.3/filearchy/extdata/gebco_ovr5.vrt"
+#> [1] "tiles in directory: /tmp/RtmpJu1hLW/file71922726e876e"
 #plan(sequential)
 fs::dir_ls(dirname(dirname(dirname(tiles$path[1]))), recurse = TRUE, type = "f")
-#> /tmp/RtmpdO9jh2/file6c22479521953/0/0/0.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/1/0/0.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/1/0/1.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/1/1/0.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/1/1/1.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/2/0/0.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/2/0/1.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/2/0/2.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/2/0/3.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/2/1/0.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/2/1/1.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/2/1/2.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/2/1/3.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/2/2/0.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/2/2/1.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/2/2/2.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/2/2/3.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/2/3/0.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/2/3/1.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/2/3/2.png
-#> /tmp/RtmpdO9jh2/file6c22479521953/2/3/3.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/0/0/0.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/1/0/0.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/1/0/1.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/1/1/0.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/1/1/1.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/2/0/0.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/2/0/1.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/2/0/2.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/2/0/3.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/2/1/0.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/2/1/1.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/2/1/2.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/2/1/3.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/2/2/0.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/2/2/1.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/2/2/2.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/2/2/3.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/2/3/0.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/2/3/1.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/2/3/2.png
+#> /tmp/RtmpJu1hLW/file71922726e876e/2/3/3.png
 
 gdalraster::createCopy("GTiff", tf <- tempfile(fileext = ".tif"), tiles$path[1])
 #> 0...10...20...30...40...50...60...70...80...90...100 - done.

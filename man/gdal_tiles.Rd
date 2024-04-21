@@ -36,12 +36,7 @@ the tile scheme, invisibly as a dataframe
 Create tiles, like gdal2tiles.py
 }
 \examples{
-#p <- system.file("help/figures/logo.png", package = "survival", mustWork = TRUE)
-#ss <- paste0(c("vrt://\%s?outsize=500\%s,500\%s&a_ullr=",
- #  "-20037508,20037508,20037508,-20037508&a_srs=EPSG:3857"), collapse = "")
- #dsn <- sprintf(ss, p, "\%", "\%")
- dsn <- sprintf("vrt://\%s?ovr=5&ot=Byte&scale=true",
-  "/vsicurl/https://gebco2023.s3.valeria.science/gebco_2023_land_cog.tif")
+dsn <- system.file("extdata/gebco_ovr5.vrt", package = "filearchy", mustWork = TRUE)
 ## parallelize here
 #future::plan(multicore)
 tiles <- gdal_tiles(dsn)

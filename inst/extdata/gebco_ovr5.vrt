@@ -1,0 +1,26 @@
+<VRTDataset rasterXSize="1350" rasterYSize="675">
+  <SRS dataAxisToSRSAxisMapping="2,1">GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AXIS["Latitude",NORTH],AXIS["Longitude",EAST],AUTHORITY["EPSG","4326"]]</SRS>
+  <GeoTransform> -1.8000000000000000e+02,  2.6666666666666666e-01,  0.0000000000000000e+00,  9.0000000000000000e+01,  0.0000000000000000e+00, -2.6666666666666666e-01</GeoTransform>
+  <Metadata>
+    <MDI key="AREA_OR_POINT">Area</MDI>
+  </Metadata>
+  <Metadata domain="IMAGE_STRUCTURE">
+    <MDI key="INTERLEAVE">BAND</MDI>
+    <MDI key="COMPRESSION">DEFLATE</MDI>
+  </Metadata>
+  <VRTRasterBand dataType="Byte" band="1" blockXSize="512" blockYSize="512">
+    <ColorInterp>Gray</ColorInterp>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="0">/vsicurl/https://gebco2023.s3.valeria.science/gebco_2023_land_cog.tif</SourceFilename>
+      <OpenOptions>
+        <OOI key="OVERVIEW_LEVEL">5 only</OOI>
+      </OpenOptions>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="1350" RasterYSize="675" DataType="Int16" BlockXSize="512" BlockYSize="512" />
+      <SrcRect xOff="0" yOff="0" xSize="1350" ySize="675" />
+      <DstRect xOff="0" yOff="0" xSize="1350" ySize="675" />
+      <ScaleOffset>164.795</ScaleOffset>
+      <ScaleRatio>0.0172344</ScaleRatio>
+    </ComplexSource>
+  </VRTRasterBand>
+</VRTDataset>

@@ -28,19 +28,15 @@ write_tile <- function(tile, dataset, output_dir = tempdir(), overwrite = FALSE)
 #' @importFrom furrr future_map
 #' @importFrom methods new
 #' @examples
-#' #p <- system.file("help/figures/logo.png", package = "survival", mustWork = TRUE)
-#' #ss <- paste0(c("vrt://%s?outsize=500%s,500%s&a_ullr=",
-#'  #  "-20037508,20037508,20037508,-20037508&a_srs=EPSG:3857"), collapse = "")
-#'  #dsn <- sprintf(ss, p, "%", "%")
-#'  dsn <- sprintf("vrt://%s?ovr=5&ot=Byte&scale=true",
-#'   "/vsicurl/https://gebco2023.s3.valeria.science/gebco_2023_land_cog.tif")
+#' dsn <- system.file("extdata/gebco_ovr5.vrt", package = "filearchy", mustWork = TRUE)
 #' ## parallelize here
 #' #future::plan(multicore)
 #' tiles <- gdal_tiles(dsn)
 #' if (!interactive()) unlink(tiles$path)
 #' #future::plan(sequential)
 gdal_tiles <- function(dsn, nzoom = NULL, blocksize = 256L, t_srs = "EPSG:3857", update = TRUE, output_dir = tempfile(), overwrite = FALSE) {
-  opt <- gdalraster::get_config_option("GDAL_PAM_ENABLED")
+ #browser()
+   opt <- gdalraster::get_config_option("GDAL_PAM_ENABLED")
   gdalraster::set_config_option("GDAL_PAM_ENABLED", "NO")
   on.exit(gdalraster::set_config_option("GDAL_PAM_ENABLED", opt), add = TRUE)
 
@@ -71,8 +67,13 @@ gdal_tiles <- function(dsn, nzoom = NULL, blocksize = 256L, t_srs = "EPSG:3857",
   ex[4] <- min(c(ex[4], 20037508.342789244))
 
   filelist <- base$getFileList()
+  print(filelist)
+  #[1] "/vsimem/file70fd4d3a0623.vrt"
+  #[2] "/perm_storage/home/mdsumner/R/x86_64-pc-linux-gnu-library/4.3/filearchy/extdata/gebco_ovr5.vrt"
+
   base$close()
-  unlink(filelist)
+  ## this would delete our source, so how do we only clean up the vsimem? do we?
+  #unlink(filelist)
 
   for (i in seq_len(nzoom)) {
     isize <- basesize * 2^(i-1)
