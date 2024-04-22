@@ -1,0 +1,115 @@
+---
+title: "global scheme"
+author: "Michael Sumner"
+date: "2024-04-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+I think this can be quite simple. If profile is Mercator or geodetic, then 
+
+```R
+ex <- c(-1, 1, -1, 1) * 20037508
+
+#or 
+
+ex <- c(-180, 180, -90, 90)
+```
+
+otherwise, extent is the source extent in the target crs, buffered out to clean grain. 
+
+So, when we loop on zoom we can simply test if the target extent fits in less than one pixel, otherwise we include it. Once the zoom reaches the situation that resolution is native we can stop. 
+
+So, 
+
+
+Mercator case
+
+
+```{r}
+dsn <- system.file("extdata/storml_elev.tif", package = "gdalraster", mustWork = TRUE)
+#dsn <- sprintf("vrt://%s?ovr=2&projwin=100,-30,160,-50", sds::gebco())
+library(grout)
+library(gdalraster)
+## we need the source extent and dimension
+ds <- new(GDALRaster, dsn)
+src_dm <- c(ds$getRasterXSize(), ds$getRasterYSize())
+src_ex <- ds$bbox()[c(1, 3, 2, 4)]
+src_crs <- ds$getProjection()
+
+## src_ex and src_crs are ignored for mercator and geodetic
+profile <- tile_profile("mercator", extent = src_ex, crs = src_crs)
+
+## target extent and global extent
+tgt_ex <- reproj::reproj_extent(src_ex, profile$crs, source = src_crs)
+gbl_ex <- profile$extent
+tgt_crs <- profile$crs %||% src_crs
+
+blocksize <- 256
+
+  warp(dsn, tf <- tempfile(tmpdir = "/vsimem", fileext = ".vrt"),
+       t_srs = tgt_crs, cl_arg = c("-ts", blocksize, 0), quiet = TRUE)
+  base <- new(gdalraster::GDALRaster, tf)
+  basesize <- c(base$getRasterXSize(), base$getRasterYSize())
+  base$close()
+  gdalraster::vsi_unlink(tf)
+  
+res0 <- diff(tgt_ex)[c(1, 3)] / (src_dm * 2)
+xres0 <- res0[1]; yres0 <- res0[2]
+rr <- terra::project(terra::rast(dsn), "EPSG:3857")
+min_ratio <- 8
+l <- list()
+for (nz in 0:22) {
+  if (!is.null(zooms) && (!nz %in% zooms)) next;
+
+  dm <- rep(blocksize, 2L) * 2^nz
+  xres <- vaster::x_res(dm, gbl_ex)
+  yres <- vaster::y_res(dm, gbl_ex)
+  a_ex <- vaster::align_extent(tgt_ex, dm %/% blocksize, gbl_ex)
+  a_dm <- as.integer(round(diff(a_ex)[c(1, 3)] / c(xres, yres)))
+  
+  g <- grout(a_dm, a_ex, rep(blocksize, length.out = 2L))
+  
+ if (is.null(zooms) && (xres < xres0 & yres < yres0)) break;
+ 
+  ntiles <- c(g$scheme$ntilesX, g$scheme$ntilesY)
+  
+  res_zoom <- diff(a_ex)[c(1, 3)] / a_dm
+  
+  tst <- mean(res_zoom/ res0) < min_ratio 
+  if (!is.null(zooms)) tst <- TRUE  ## ignore ratio logic and just do what user asked
+  if ( tst) {  
+  ti <- tile_index(g)
+    ti$zoom <- nz
+    
+    ti$crs <- tgt_srs
+    ## we have to flip the rows (we need tms vs xyz)
+    ti$tile_col_tms <- ti$tile_col - 1
+    if (xyz) {
+       ti$tile_row_tms <- g$scheme$ntilesY - ti$tile_row
+    } else {
+      ti$tile_row_tms <- ti$tile_row - 1
+    }
+    
+    ti$path <- file.path(output_dir, ti$zoom, ti$tile_col_tms, sprintf("%i.png", ti$tile_row_tms))
+
+    l <- c(l, list(ti))
+  } 
+  l
+}
+
+d <- do.call(rbind, l)
+plot_scheme(d)
+terra::image(rr, add = TRUE, col = hcl.colors(20))
+```
+
+What about overwrite? 
+
+- overwrite = TRUE, we blat
+- overwrite = FALSE, out_dir exists, we stop
+- update = FALSE, every tile gets written
+- update = TRUE, only non-exist tiles get written, overwrite is ignored
+
+

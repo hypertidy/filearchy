@@ -6,31 +6,32 @@
 \usage{
 gdal_tiles(
   dsn,
-  nzoom = NULL,
+  zooms = NULL,
   blocksize = 256L,
-  t_srs = "EPSG:3857",
-  update = TRUE,
+  profile = "mercator",
   output_dir = tempfile(),
   overwrite = FALSE,
-  dry_run = FALSE
+  update = FALSE,
+  dry_run = FALSE,
+  xyz = FALSE
 )
 }
 \arguments{
 \item{dsn}{input dataset, file path, VRT string, or any DSN GDAL can open and warp from}
 
-\item{nzoom}{number of levels, currently just single number}
-
 \item{blocksize}{size of tiles, defaults to 256}
-
-\item{t_srs}{crs of output, defaults to global mercator (use "EPSG:4326" for geodetic/longlat)}
-
-\item{update}{not implemented (please take care)}
 
 \item{output_dir}{directory to write to, by default a tempdir is used}
 
 \item{overwrite}{clobber the output directory, \code{FALSE} is the default}
 
+\item{update}{not implemented (please take care)}
+
 \item{dry_run}{if \code{TRUE} only the scheme is built and returned as a data frame}
+
+\item{nzoom}{number of levels, currently just single number}
+
+\item{t_srs}{crs of output, defaults to global mercator (use "EPSG:4326" for geodetic/longlat)}
 }
 \value{
 the tile scheme, invisibly as a dataframe
