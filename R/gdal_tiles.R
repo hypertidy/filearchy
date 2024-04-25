@@ -40,7 +40,7 @@ write_tile <- function(tile, dataset,  overwrite = FALSE) {
 
 #' Create tiles, like gdal2tiles.py
 #'
-#' @param nzoom  number of levels, currently just single number
+#' @param zoom  zooms to render, can be a single number multiple (from 0:23)
 #' @param blocksize size of tiles, defaults to 256
 #' @param t_srs crs of output, defaults to global mercator (use "EPSG:4326" for geodetic/longlat)
 #' @param dsn input dataset, file path, VRT string, or any DSN GDAL can open and warp from
@@ -52,7 +52,7 @@ write_tile <- function(tile, dataset,  overwrite = FALSE) {
 #' @return the tile scheme, invisibly as a dataframe
 #' @export
 #'
-#' @importFrom grout grout tile_index
+#' @importFrom grout tile_spex tile_zoom
 #' @importFrom gdalraster warp
 #' @importFrom furrr future_map
 #' @importFrom methods new
@@ -60,17 +60,29 @@ write_tile <- function(tile, dataset,  overwrite = FALSE) {
 #' dsn <- system.file("extdata/gebco_ovr5.vrt", package = "filearchy", mustWork = TRUE)
 #' ## parallelize here
 #' #future::plan(multicore)
-#' tiles <- gdal_tiles(dsn)
+#' tiles <- gdal_tiles(dsn, dry_run = TRUE)
 #' if (!interactive()) unlink(tiles$path)
 #' #future::plan(sequential)
-gdal_tiles <- function(dsn, zooms = NULL,
+gdal_tiles <- function(dsn, zoom = NULL,
                        blocksize = 256L, profile = "mercator",
                        output_dir = tempfile(),
                        overwrite = FALSE,
                        update = FALSE,
-                       dry_run = FALSE,
-                       xyz = FALSE) {
+                       dry_run = TRUE,
+                       xyz = FALSE,
+                       format = c("png", "jpeg")) {
+
+  format <- match.arg(format)
+  fileext <- switch(format,
+                    png = "%i.png",
+                    jpeg = "%i.jpg")
   #browser()
+
+  ## below we check if natural zoom to be determined
+  if (!is.null(zoom)) {
+    zoom <- as.integer(unique(zoom))
+    if (anyNA(zoom) || any(zoom < 0) || any(zoom > 24)) stop("unsupported zoom levels, make unique and within 0:23")
+  }
   opt <- gdalraster::get_config_option("GDAL_PAM_ENABLED")
   gdalraster::set_config_option("GDAL_PAM_ENABLED", "NO")
   on.exit(gdalraster::set_config_option("GDAL_PAM_ENABLED", opt), add = TRUE)
@@ -90,80 +102,64 @@ gdal_tiles <- function(dsn, zooms = NULL,
     }
   }
 
-  ds <- new(GDALRaster, dsn)
+  ds <- new(gdalraster::GDALRaster, dsn)
   src_dm <- c(ds$getRasterXSize(), ds$getRasterYSize())
   src_ex <- ds$bbox()[c(1, 3, 2, 4)]
+  src_res <- diff(src_ex)[c(1, 3)]/src_dm
+
   src_crs <- ds$getProjection()
+  ## dirty hack to scale resolution if we are going from longlat to Mercator
+  if (profile == "mercator" && gdalraster::srs_is_geographic(src_crs)) {
+    src_res <- src_res * c(1, cos(mean(src_ex[3:4] * pi / 180))) * 111111
+
+  }
 
   ## src_ex and src_crs are ignored for mercator and geodetic
-  profile <- tile_profile(profile, extent = src_ex, crs = src_crs)
+  profl <- tile_profile(profile, extent = src_ex, crs = src_crs)
 
   ## target extent and global extent
-  tgt_ex <- reproj::reproj_extent(src_ex, profile$crs, source = src_crs)
-  gbl_ex <- profile$extent
-  tgt_crs <- profile$crs %||% src_crs
+  tgt_ex <- reproj::reproj_extent(src_ex, profl$crs, source = src_crs)
+  gbl_ex <- profl$extent
+  tgt_crs <- profl$crs %||% src_crs
 
   blocksize <- 256
 
   warp(dsn, tf <- tempfile(tmpdir = "/vsimem", fileext = ".vrt"),
        t_srs = tgt_crs, cl_arg = c("-ts", blocksize, 0), quiet = TRUE)
   base <- new(gdalraster::GDALRaster, tf)
+
   basesize <- c(base$getRasterXSize(), base$getRasterYSize())
+
+  baseextent <- base$bbox()[c(1, 3, 2, 4)]
   base$close()
   gdalraster::vsi_unlink(tf)
+blocksize <- rep(blocksize, length.out = 2L)
+  if (is.null(zoom)) {
+    ## pick the natural one and do all levels below that
 
-  res0 <- diff(tgt_ex)[c(1, 3)] / (src_dm * 2)
-  xres0 <- res0[1]; yres0 <- res0[2]
-  min_ratio <- 8
-  l <- list()
-  for (nz in 0:22) {
-    if (!is.null(zooms) && (!nz %in% zooms)) next;
-
-    dm <- rep(blocksize, 2L) * 2^nz
-    xres <- vaster::x_res(dm, gbl_ex)
-    yres <- vaster::y_res(dm, gbl_ex)
-    a_ex <- vaster::align_extent(tgt_ex, dm %/% blocksize, gbl_ex)
-    a_dm <- as.integer(round(diff(a_ex)[c(1, 3)] / c(xres, yres)))
-
-    g <- grout(a_dm, a_ex, rep(blocksize, length.out = 2L))
-
-    if (is.null(zooms) && (xres < xres0 & yres < yres0)) break;
-
-    ntiles <- c(g$scheme$ntilesX, g$scheme$ntilesY)
-
-    res_zoom <- diff(a_ex)[c(1, 3)] / a_dm
-
-    tst <- mean(res_zoom/ res0) < min_ratio
-    if (!is.null(zooms)) tst <- TRUE  ## ignore ratio logic and just do what user asked
-    if ( tst) {
-      ti <- tile_index(g)
-      ti$zoom <- nz
-
-      ti$crs <- tgt_crs
-      ## we have to flip the rows (we need tms vs xyz)
-      ti$tile_col_tms <- ti$tile_col - 1
-      if (xyz) {
-        ti$tile_row_tms <- g$scheme$ntilesY - ti$tile_row
-      } else {
-        ti$tile_row_tms <- ti$tile_row - 1
-      }
-
-      ti$path <- file.path(output_dir, ti$zoom, ti$tile_col_tms, sprintf("%i.png", ti$tile_row_tms))
-
-      l <- c(l, list(ti))
-    }
-    l
+    zoom <- seq(0, grout::tile_zoom(as.integer(diff(baseextent)[c(1, 3)] / src_res),baseextent,
+                     blocksize = blocksize, profile = profile))
   }
+  baseextent[1] <- max(c(baseextent[1], profl$extent[1]))
+  baseextent[2] <- min(c(baseextent[2], profl$extent[2]))
+  baseextent[3] <- max(c(baseextent[3], profl$extent[3]))
+  baseextent[4] <- min(c(baseextent[4], profl$extent[4]))
 
-
-  d <- do.call(rbind, l)
+  d <- do.call(rbind, lapply(zoom, function(.z) grout::tile_spec(
+         dimension = basesize,
+         extent  = baseextent,
+         zoom = .z,
+         blocksize = rep(blocksize, length.out = 2L),
+         profile = profile,
+         xyz = xyz)))
+  d <- tibble::as_tibble(d)
   if (dry_run) return(d)
 
+  d$path <- file.path(output_dir, d$zoom, d$tile_col, sprintf(fileext, d$tile_row))
   jk <- future_map(split(d, 1:nrow(d)), write_tile,
                    dataset = dsn, overwrite = overwrite)
   print(sprintf("tiles in directory: %s", output_dir))
 
 
-  invisible(d)
-
+d
 }

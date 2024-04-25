@@ -1,6 +1,6 @@
 Package: filearchy
 Title: Write Imagery to Tiles
-Version: 0.1.0.9001
+Version: 0.1.0.9002
 Authors@R: 
     c(person(given = "Michael D.",
            family = "Sumner",
@@ -15,7 +15,8 @@ RoxygenNote: 7.3.1
 Imports: 
     fs,
     furrr,
-    gdalraster,
-    grout,
-    methods
-Remotes: hypertidy/grout
+    gdalraster (>= 1.10.9110),
+    grout (>= 0.0.2.9007),
+    methods,
+    tibble
+Remotes: hypertidy/grout, USDAForestService/gdalraster

@@ -6,18 +6,21 @@
 \usage{
 gdal_tiles(
   dsn,
-  zooms = NULL,
+  zoom = NULL,
   blocksize = 256L,
   profile = "mercator",
   output_dir = tempfile(),
   overwrite = FALSE,
   update = FALSE,
-  dry_run = FALSE,
-  xyz = FALSE
+  dry_run = TRUE,
+  xyz = FALSE,
+  format = c("png", "jpeg")
 )
 }
 \arguments{
 \item{dsn}{input dataset, file path, VRT string, or any DSN GDAL can open and warp from}
+
+\item{zoom}{zooms to render, can be a single number multiple (from 0:23)}
 
 \item{blocksize}{size of tiles, defaults to 256}
 
@@ -28,8 +31,6 @@ gdal_tiles(
 \item{update}{not implemented (please take care)}
 
 \item{dry_run}{if \code{TRUE} only the scheme is built and returned as a data frame}
-
-\item{nzoom}{number of levels, currently just single number}
 
 \item{t_srs}{crs of output, defaults to global mercator (use "EPSG:4326" for geodetic/longlat)}
 }
@@ -43,7 +44,7 @@ Create tiles, like gdal2tiles.py
 dsn <- system.file("extdata/gebco_ovr5.vrt", package = "filearchy", mustWork = TRUE)
 ## parallelize here
 #future::plan(multicore)
-tiles <- gdal_tiles(dsn)
+tiles <- gdal_tiles(dsn, dry_run = TRUE)
 if (!interactive()) unlink(tiles$path)
 #future::plan(sequential)
 }
