@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">filearchy</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9002</span>
       </span>
     </div>
 
@@ -49,13 +49,15 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gdal_tiles</span><span class="op">(</span></span>
 <span>  <span class="va">dsn</span>,</span>
-<span>  nzoom <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  zoom <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  blocksize <span class="op">=</span> <span class="fl">256L</span>,</span>
-<span>  t_srs <span class="op">=</span> <span class="st">"EPSG:3857"</span>,</span>
-<span>  update <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  profile <span class="op">=</span> <span class="st">"mercator"</span>,</span>
 <span>  output_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  dry_run <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  update <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  dry_run <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  xyz <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"png"</span>, <span class="st">"jpeg"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -65,20 +67,12 @@
 <dd><p>input dataset, file path, VRT string, or any DSN GDAL can open and warp from</p></dd>
 
 
-<dt>nzoom</dt>
-<dd><p>number of levels, currently just single number</p></dd>
+<dt>zoom</dt>
+<dd><p>zooms to render, can be a single number multiple (from 0:23)</p></dd>
 
 
 <dt>blocksize</dt>
 <dd><p>size of tiles, defaults to 256</p></dd>
-
-
-<dt>t_srs</dt>
-<dd><p>crs of output, defaults to global mercator (use "EPSG:4326" for geodetic/longlat)</p></dd>
-
-
-<dt>update</dt>
-<dd><p>not implemented (please take care)</p></dd>
 
 
 <dt>output_dir</dt>
@@ -89,8 +83,16 @@
 <dd><p>clobber the output directory, <code>FALSE</code> is the default</p></dd>
 
 
+<dt>update</dt>
+<dd><p>not implemented (please take care)</p></dd>
+
+
 <dt>dry_run</dt>
 <dd><p>if <code>TRUE</code> only the scheme is built and returned as a data frame</p></dd>
+
+
+<dt>t_srs</dt>
+<dd><p>crs of output, defaults to global mercator (use "EPSG:4326" for geodetic/longlat)</p></dd>
 
 </dl></div>
     <div id="value">
@@ -105,9 +107,10 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">dsn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/gebco_ovr5.vrt"</span>, package <span class="op">=</span> <span class="st">"filearchy"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## parallelize here</span></span></span>
 <span class="r-in"><span><span class="co">#future::plan(multicore)</span></span></span>
-<span class="r-in"><span><span class="va">tiles</span> <span class="op">&lt;-</span> <span class="fu">gdal_tiles</span><span class="op">(</span><span class="va">dsn</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "tiles in directory: /tmp/RtmpWaoXD8/file1aa47de1809a"</span>
+<span class="r-in"><span><span class="va">tiles</span> <span class="op">&lt;-</span> <span class="fu">gdal_tiles</span><span class="op">(</span><span class="va">dsn</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘reproj’</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">tiles</span><span class="op">$</span><span class="va">path</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'tiles' not found</span>
 <span class="r-in"><span><span class="co">#future::plan(sequential)</span></span></span>
 </code></pre></div>
     </div>
