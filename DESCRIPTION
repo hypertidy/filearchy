@@ -16,7 +16,7 @@ Imports:
     fs,
     furrr,
     gdalraster (>= 1.10.9110),
-    grout (>= 0.0.2.9007),
+    grout (>= 0.0.2.9009),
     methods,
     PROJ,
     reproj,
