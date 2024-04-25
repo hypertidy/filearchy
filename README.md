@@ -18,10 +18,8 @@ The goal of filearchy is to generate pyramid tiled image directories.
 - (*somehow*) detect the case when warp is not needed (3857-\>3857 or
   4326-\>4326) and use RasterIO (translate) instead, it should be a bit
   faster - but how to encode that in the scheme vs. the run?
-- what is profile ‘raster’? tile in the input srs and extent, not global
-  tiles sparse or otherwise
-- DONE implement xyz vs tms mode (I think it’s just nrow - row)
-- driver and file extension options
+- DONE implement xyz vs tms mode
+- driver and file extension options, we have png and jpeg
 - make it clear that byte-scaling is not mandatory, perfectly valid to
   have tiles of data like
   [tiles-prod](https://registry.opendata.aws/terrain-tiles/) and see
@@ -59,94 +57,94 @@ library(filearchy)
 #library(future); plan(multicore)
 dsn <- system.file("extdata/gebco_ovr5.vrt", package = "filearchy", mustWork = TRUE)
 tiles <- gdal_tiles(dsn, dry_run  = FALSE)
-#> [1] "tiles in directory: /tmp/Rtmpb3hzu0/file9a09613f9d2e9"
+#> [1] "tiles in directory: /tmp/RtmpqJkal4/file9f9034900e7fa"
 #plan(sequential)
 fs::dir_ls(dirname(dirname(dirname(tiles$path[1]))), recurse = TRUE, type = "f")
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/0/0/1.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/1/0/1.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/1/0/2.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/1/1/1.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/1/1/2.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/0/1.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/0/2.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/0/3.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/0/4.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/1/1.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/1/2.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/1/3.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/1/4.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/2/1.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/2/2.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/2/3.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/2/4.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/3/1.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/3/2.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/3/3.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/3/4.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/0/1.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/0/2.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/0/3.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/0/4.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/0/5.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/0/6.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/0/7.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/0/8.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/1/1.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/1/2.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/1/3.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/1/4.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/1/5.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/1/6.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/1/7.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/1/8.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/2/1.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/2/2.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/2/3.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/2/4.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/2/5.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/2/6.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/2/7.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/2/8.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/3/1.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/3/2.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/3/3.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/3/4.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/3/5.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/3/6.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/3/7.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/3/8.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/4/1.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/4/2.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/4/3.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/4/4.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/4/5.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/4/6.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/4/7.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/4/8.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/5/1.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/5/2.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/5/3.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/5/4.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/5/5.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/5/6.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/5/7.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/5/8.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/6/1.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/6/2.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/6/3.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/6/4.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/6/5.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/6/6.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/6/7.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/6/8.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/7/1.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/7/2.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/7/3.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/7/4.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/7/5.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/7/6.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/7/7.png
-#> /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/7/8.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/0/0/0.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/1/0/0.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/1/0/1.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/1/1/0.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/1/1/1.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/2/0/0.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/2/0/1.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/2/0/2.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/2/0/3.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/2/1/0.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/2/1/1.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/2/1/2.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/2/1/3.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/2/2/0.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/2/2/1.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/2/2/2.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/2/2/3.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/2/3/0.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/2/3/1.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/2/3/2.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/2/3/3.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/0/0.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/0/1.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/0/2.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/0/3.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/0/4.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/0/5.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/0/6.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/0/7.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/1/0.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/1/1.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/1/2.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/1/3.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/1/4.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/1/5.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/1/6.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/1/7.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/2/0.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/2/1.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/2/2.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/2/3.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/2/4.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/2/5.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/2/6.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/2/7.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/3/0.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/3/1.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/3/2.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/3/3.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/3/4.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/3/5.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/3/6.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/3/7.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/4/0.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/4/1.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/4/2.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/4/3.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/4/4.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/4/5.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/4/6.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/4/7.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/5/0.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/5/1.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/5/2.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/5/3.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/5/4.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/5/5.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/5/6.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/5/7.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/6/0.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/6/1.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/6/2.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/6/3.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/6/4.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/6/5.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/6/6.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/6/7.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/7/0.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/7/1.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/7/2.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/7/3.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/7/4.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/7/5.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/7/6.png
+#> /tmp/RtmpqJkal4/file9f9034900e7fa/3/7/7.png
 
 gdalraster::createCopy("GTiff", tf <- tempfile(fileext = ".tif"), tiles$path[1])
 #> 0...10...20...30...40...50...60...70...80...90...100 - done.

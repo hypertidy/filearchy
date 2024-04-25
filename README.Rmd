@@ -25,9 +25,8 @@ The goal of filearchy is to generate pyramid tiled image directories. (Like gdal
 
 * DONE - see `grout::tile_spec()`  we have `dry_run` in gdal_tiles() but I think it should be a separate function to render from the scheme
 * (*somehow*) detect the case when warp is not needed (3857->3857 or 4326->4326) and use RasterIO (translate) instead, it should be a bit faster - but how to encode that in the scheme vs. the run? 
-* what is profile 'raster'? tile in the input srs and extent, not global tiles sparse or otherwise 
-* DONE implement xyz vs tms mode (I think it's just nrow - row)
-* driver and file extension options
+* DONE implement xyz vs tms mode 
+* driver and file extension options, we have png and jpeg
 * make it clear that byte-scaling is not mandatory, perfectly valid to have tiles of data like [tiles-prod](https://registry.opendata.aws/terrain-tiles/) and see [sds::wms_amazon_elevation()](https://hypertidy.github.io/sds/)
 * add palette-handling example (or point to one, probably a gdalraster vignette on byte-scaling and attach palette and expand)
 * DONE add arbitrary zoom levels not just a max
