@@ -68,22 +68,22 @@
 <h2 id="todo">TODO<a class="anchor" aria-label="anchor" href="#todo"></a>
 </h2>
 <ul>
-<li>we have <code>dry_run</code> in gdal_tiles() but I think it should be a separate function to render from the scheme</li>
+<li>DONE - see <code><a href="https://rdrr.io/pkg/grout/man/tile_spec.html" class="external-link">grout::tile_spec()</a></code> we have <code>dry_run</code> in gdal_tiles() but I think it should be a separate function to render from the scheme</li>
 <li>(<em>somehow</em>) detect the case when warp is not needed (3857-&gt;3857 or 4326-&gt;4326) and use RasterIO (translate) instead, it should be a bit faster - but how to encode that in the scheme vs. the run?</li>
-<li>what is profile ‘raster’? just tile in the input_srs?<br>
-</li>
-<li>implement xyz vs tms mode (I think it’s just nrow - row)</li>
+<li>what is profile ‘raster’? tile in the input srs and extent, not global tiles sparse or otherwise</li>
+<li>DONE implement xyz vs tms mode (I think it’s just nrow - row)</li>
 <li>driver and file extension options</li>
 <li>make it clear that byte-scaling is not mandatory, perfectly valid to have tiles of data like <a href="https://registry.opendata.aws/terrain-tiles/" class="external-link">tiles-prod</a> and see <a href="https://hypertidy.github.io/sds/" class="external-link">sds::wms_amazon_elevation()</a>
 </li>
 <li>add palette-handling example (or point to one, probably a gdalraster vignette on byte-scaling and attach palette and expand)</li>
-<li>add arbitrary zoom levels not just a max</li>
+<li>DONE add arbitrary zoom levels not just a max</li>
 <li>add resampling option</li>
 <li>add s_srs (but what about general non-georeferenced? why do we have s_srs?)</li>
 <li>discuss parallel write, how to enable</li>
 <li>exclude transparent tiles (not sure how, do we detect zero-png/jpg?)</li>
-<li>resume (don’t rewrite non-missing)</li>
-<li>profile mercator/geodetic/raster (not sure what raster is?)</li>
+<li>DONE ‘update’ arg - resume (don’t rewrite non-missing)</li>
+<li>DONE profile mercator/geodetic/raster</li>
+<li>VRT creation for tiles (at zoom), or conversion to GTI etc</li>
 </ul>
 </div>
 <div class="section level2">
@@ -103,31 +103,95 @@
 <span><span class="co">#options(parallelly.fork.enable = TRUE, future.rng.onMisuse = "ignore")</span></span>
 <span><span class="co">#library(future); plan(multicore)</span></span>
 <span><span class="va">dsn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/gebco_ovr5.vrt"</span>, package <span class="op">=</span> <span class="st">"filearchy"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">tiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gdal_tiles.html">gdal_tiles</a></span><span class="op">(</span><span class="va">dsn</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tiles in directory: /tmp/Rtmps0OJ1N/file7536b6b41bcbc"</span></span>
+<span><span class="va">tiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gdal_tiles.html">gdal_tiles</a></span><span class="op">(</span><span class="va">dsn</span>, dry_run  <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "tiles in directory: /tmp/Rtmpb3hzu0/file9a09613f9d2e9"</span></span>
 <span><span class="co">#plan(sequential)</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_ls.html" class="external-link">dir_ls</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">tiles</span><span class="op">$</span><span class="va">path</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, recurse <span class="op">=</span> <span class="cn">TRUE</span>, type <span class="op">=</span> <span class="st">"f"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/0/0/0.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/1/0/0.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/1/0/1.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/1/1/0.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/1/1/1.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/0/0.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/0/1.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/0/2.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/0/3.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/1/0.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/1/1.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/1/2.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/1/3.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/2/0.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/2/1.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/2/2.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/2/3.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/3/0.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/3/1.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/3/2.png</span></span>
-<span><span class="co">#&gt; /tmp/Rtmps0OJ1N/file7536b6b41bcbc/2/3/3.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/0/0/1.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/1/0/1.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/1/0/2.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/1/1/1.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/1/1/2.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/0/1.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/0/2.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/0/3.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/0/4.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/1/1.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/1/2.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/1/3.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/1/4.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/2/1.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/2/2.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/2/3.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/2/4.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/3/1.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/3/2.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/3/3.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/2/3/4.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/0/1.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/0/2.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/0/3.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/0/4.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/0/5.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/0/6.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/0/7.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/0/8.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/1/1.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/1/2.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/1/3.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/1/4.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/1/5.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/1/6.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/1/7.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/1/8.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/2/1.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/2/2.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/2/3.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/2/4.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/2/5.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/2/6.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/2/7.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/2/8.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/3/1.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/3/2.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/3/3.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/3/4.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/3/5.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/3/6.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/3/7.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/3/8.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/4/1.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/4/2.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/4/3.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/4/4.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/4/5.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/4/6.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/4/7.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/4/8.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/5/1.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/5/2.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/5/3.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/5/4.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/5/5.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/5/6.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/5/7.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/5/8.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/6/1.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/6/2.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/6/3.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/6/4.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/6/5.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/6/6.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/6/7.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/6/8.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/7/1.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/7/2.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/7/3.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/7/4.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/7/5.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/7/6.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/7/7.png</span></span>
+<span><span class="co">#&gt; /tmp/Rtmpb3hzu0/file9a09613f9d2e9/3/7/8.png</span></span>
 <span></span>
 <span><span class="fu">gdalraster</span><span class="fu">::</span><span class="fu"><a href="https://usdaforestservice.github.io/gdalraster/reference/createCopy.html" class="external-link">createCopy</a></span><span class="op">(</span><span class="st">"GTiff"</span>, <span class="va">tf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".tif"</span><span class="op">)</span>, <span class="va">tiles</span><span class="op">$</span><span class="va">path</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 0...10...20...30...40...50...60...70...80...90...100 - done.</span></span>
@@ -160,7 +224,7 @@
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>Or, just do a dry_run:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">scheme</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gdal_tiles.html">gdal_tiles</a></span><span class="op">(</span><span class="va">dsn</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span>, nzoom <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">scheme</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gdal_tiles.html">gdal_tiles</a></span><span class="op">(</span><span class="va">dsn</span>,  zoom <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">scheme</span><span class="op">$</span><span class="va">xmin</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">scheme</span><span class="op">$</span><span class="va">xmax</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">scheme</span><span class="op">$</span><span class="va">ymin</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">scheme</span><span class="op">$</span><span class="va">ymax</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>, <span class="va">ex</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, asp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
@@ -170,10 +234,6 @@
 <span><span class="va">mx</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu">filter</span><span class="op">(</span><span class="va">scheme</span>, <span class="va">zoom</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">zoom</span><span class="op">)</span> <span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">mx</span>, <span class="fu"><a href="https://rdrr.io/r/graphics/rect.html" class="external-link">rect</a></span><span class="op">(</span><span class="va">xmin</span>, <span class="va">ymin</span>, <span class="va">xmax</span>, <span class="va">ymax</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-scheme-only-1.png" width="100%"></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/any.html" class="external-link">any</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">scheme</span><span class="op">$</span><span class="va">path</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>

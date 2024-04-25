@@ -75,6 +75,10 @@
 <dd><p>size of tiles, defaults to 256</p></dd>
 
 
+<dt>profile</dt>
+<dd><p>domain to use, 'mercator', 'geodetic' (longlat), or 'raster'</p></dd>
+
+
 <dt>output_dir</dt>
 <dd><p>directory to write to, by default a tempdir is used</p></dd>
 
@@ -91,8 +95,12 @@
 <dd><p>if <code>TRUE</code> only the scheme is built and returned as a data frame</p></dd>
 
 
-<dt>t_srs</dt>
-<dd><p>crs of output, defaults to global mercator (use "EPSG:4326" for geodetic/longlat)</p></dd>
+<dt>xyz</dt>
+<dd><p>is the zero-row tile to be at the top, then set this <code>TRUE</code></p></dd>
+
+
+<dt>format</dt>
+<dd><p>'png' or 'jpeg'</p></dd>
 
 </dl></div>
     <div id="value">
@@ -108,9 +116,8 @@
 <span class="r-in"><span><span class="co">## parallelize here</span></span></span>
 <span class="r-in"><span><span class="co">#future::plan(multicore)</span></span></span>
 <span class="r-in"><span><span class="va">tiles</span> <span class="op">&lt;-</span> <span class="fu">gdal_tiles</span><span class="op">(</span><span class="va">dsn</span>, dry_run <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loadNamespace(x):</span> there is no package called ‘reproj’</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">tiles</span><span class="op">$</span><span class="va">path</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'tiles' not found</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Unknown or uninitialised column: `path`.</span>
 <span class="r-in"><span><span class="co">#future::plan(sequential)</span></span></span>
 </code></pre></div>
     </div>
