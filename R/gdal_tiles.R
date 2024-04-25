@@ -12,6 +12,7 @@ tile_profile <- function(x = c("mercator", "geodetic", "raster"),
                 raster = crs)
   list(extent = extent, crs = crs, name = x )
 }
+#' @importFrom graphics text
 plot_scheme <- function(x, max = 10000, add = FALSE, label = NULL, ...) {
   if (nrow(x) > max) stop("many many tiles in input > max: %i", max)
   if (!add) {
@@ -22,7 +23,7 @@ plot_scheme <- function(x, max = 10000, add = FALSE, label = NULL, ...) {
   vaster::plot_extent(exall, add = TRUE)
   if (!is.null(label)) {
     pt <- cbind((x$xmin + x$xmax)/2, (x$ymin+ x$ymax)/2)
-    text(pt, label = x[[label]])
+    graphics::text(pt, label = x[[label]])
   }
   invisible(NULL)
 }
@@ -42,20 +43,23 @@ write_tile <- function(tile, dataset,  overwrite = FALSE) {
 #'
 #' @param zoom  zooms to render, can be a single number multiple (from 0:23)
 #' @param blocksize size of tiles, defaults to 256
-#' @param t_srs crs of output, defaults to global mercator (use "EPSG:4326" for geodetic/longlat)
 #' @param dsn input dataset, file path, VRT string, or any DSN GDAL can open and warp from
 #' @param update not implemented (please take care)
 #' @param output_dir directory to write to, by default a tempdir is used
 #' @param overwrite clobber the output directory, `FALSE` is the default
 #' @param dry_run if `TRUE` only the scheme is built and returned as a data frame
+#' @param profile domain to use, 'mercator', 'geodetic' (longlat), or 'raster'
+#' @param xyz is the zero-row tile to be at the top, then set this `TRUE`
+#' @param format 'png' or 'jpeg'
 #'
 #' @return the tile scheme, invisibly as a dataframe
 #' @export
 #'
-#' @importFrom grout tile_spex tile_zoom
+#' @importFrom grout tile_spec tile_zoom
 #' @importFrom gdalraster warp
 #' @importFrom furrr future_map
 #' @importFrom methods new
+#' @importFrom PROJ proj_trans
 #' @examples
 #' dsn <- system.file("extdata/gebco_ovr5.vrt", package = "filearchy", mustWork = TRUE)
 #' ## parallelize here

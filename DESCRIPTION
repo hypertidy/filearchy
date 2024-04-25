@@ -18,5 +18,11 @@ Imports:
     gdalraster (>= 1.10.9110),
     grout (>= 0.0.2.9007),
     methods,
-    tibble
-Remotes: hypertidy/grout, USDAForestService/gdalraster
+    PROJ,
+    reproj,
+    tibble,
+    vaster
+Remotes: hypertidy/grout, 
+         USDAForestService/gdalraster, 
+         hypertidy/vaster,
+         hypertidy/reproj

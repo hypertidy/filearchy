@@ -24,6 +24,8 @@ gdal_tiles(
 
 \item{blocksize}{size of tiles, defaults to 256}
 
+\item{profile}{domain to use, 'mercator', 'geodetic' (longlat), or 'raster'}
+
 \item{output_dir}{directory to write to, by default a tempdir is used}
 
 \item{overwrite}{clobber the output directory, \code{FALSE} is the default}
@@ -32,7 +34,9 @@ gdal_tiles(
 
 \item{dry_run}{if \code{TRUE} only the scheme is built and returned as a data frame}
 
-\item{t_srs}{crs of output, defaults to global mercator (use "EPSG:4326" for geodetic/longlat)}
+\item{xyz}{is the zero-row tile to be at the top, then set this \code{TRUE}}
+
+\item{format}{'png' or 'jpeg'}
 }
 \value{
 the tile scheme, invisibly as a dataframe
