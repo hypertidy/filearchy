@@ -33,13 +33,20 @@ write_tile <- function(tile, dataset,  overwrite = FALSE) {
   if (!overwrite) {
     if (fs::file_exists(path)) return(NULL)
   }
-  fs::dir_create(dirname(path))
+  #fs::dir_create(dirname(path))
   te <- c(tile$xmin, tile$ymin, tile$xmax, tile$ymax)
 
   gdalraster::warp(dataset, path, t_srs = tile$crs, cl_arg = c("-ts", tile$ncol, tile$nrow, "-te", te), quiet = TRUE)
 }
 
 #' Create tiles, like gdal2tiles.py
+#'
+#' Create png or jpeg tiles from any GDAL DSN.
+#'
+#' Currently we write a leaflet.html by default. Note that if you run with 'update' with a
+#' different set of zooms in a previous run then the html will be overridden by a different
+#' min and/or max zoom setting. The zoom range can be set independently of the generated or
+#' existing tiles by using `minmaxzoom`.
 #'
 #' @param zoom  zooms to render, can be a single number multiple (from 0:23)
 #' @param blocksize size of tiles, defaults to 256
@@ -51,6 +58,10 @@ write_tile <- function(tile, dataset,  overwrite = FALSE) {
 #' @param profile domain to use, 'mercator', 'geodetic' (longlat), or 'raster'
 #' @param xyz is the zero-row tile to be at the top, then set this `TRUE`
 #' @param format 'png' or 'jpeg'
+#' @param write_html `TRUE` by default, writes HTML index see Details
+#' @param title title for HTML output
+#' @param copyright copyright statement for HTML output
+#' @param minmaxzoom optional, two values to set the html index range independently of the rendered levels
 #'
 #' @return the tile scheme, invisibly as a dataframe
 #' @export
@@ -74,7 +85,9 @@ gdal_tiles <- function(dsn, zoom = NULL,
                        update = FALSE,
                        dry_run = TRUE,
                        xyz = FALSE,
-                       format = c("png", "jpeg")) {
+                       format = c("png", "jpeg"),
+                       write_html = TRUE, minmaxzoom = NA,
+                       title = "", copyright = "copyright ...") {
 
   format <- match.arg(format)
   fileext <- switch(format,
@@ -87,6 +100,10 @@ gdal_tiles <- function(dsn, zoom = NULL,
     zoom <- as.integer(unique(zoom))
     if (anyNA(zoom) || any(zoom < 0) || any(zoom > 24)) stop("unsupported zoom levels, make unique and within 0:23")
   }
+  if (is.null(minmaxzoom) || !is.numeric(minmaxzoom) || anyNA(minmaxzoom)) {
+    minmaxzoom <- range(zoom)
+  }
+  minmaxzoom <- range(minmaxzoom)
   opt <- gdalraster::get_config_option("GDAL_PAM_ENABLED")
   gdalraster::set_config_option("GDAL_PAM_ENABLED", "NO")
   on.exit(gdalraster::set_config_option("GDAL_PAM_ENABLED", opt), add = TRUE)
@@ -157,11 +174,18 @@ blocksize <- rep(blocksize, length.out = 2L)
          profile = profile,
          xyz = xyz)))
   d <- tibble::as_tibble(d)
+
   if (dry_run) return(d)
 
   d$path <- file.path(output_dir, d$zoom, d$tile_col, sprintf(fileext, d$tile_row))
+  ## create all the directories upfront
+  dirs <- dirname(d$path)
+  fs::dir_create(sort(unique(dirs)), recurse = TRUE)
+
   jk <- future_map(split(d, 1:nrow(d)), write_tile,
                    dataset = dsn, overwrite = overwrite)
+
+  if (write_html) write_leaflet_html(dsn, minmaxzoom, beginzoom = min(zoom), file.path(output_dir, "leaflet.html"), tileformat = format, tms = !xyz, title = title, copyright =  copyright)
   print(sprintf("tiles in directory: %s", output_dir))
 
 

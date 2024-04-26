@@ -1,12 +1,13 @@
 Package: filearchy
 Title: Write Imagery to Tiles
-Version: 0.1.0.9002
+Version: 0.1.0.9003
 Authors@R: 
     c(person(given = "Michael D.",
            family = "Sumner",
            role = c("aut", "cre"),
            email = "mdsumner@gmail.com",
-           comment = c(ORCID = "0000-0002-2471-7511")))
+           comment = c(ORCID = "0000-0002-2471-7511")), 
+           person("Klokan Petr", "Pridal", role = c("cph", "aut"), comment = "wrote gdal2tiles.py and embedded html template copied here"))
 Description: Create directory structure of image tiles.
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -21,6 +22,7 @@ Imports:
     PROJ,
     reproj,
     tibble,
+    vapour,
     vaster
 Remotes: hypertidy/grout, 
          USDAForestService/gdalraster, 

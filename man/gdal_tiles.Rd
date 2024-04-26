@@ -14,7 +14,11 @@ gdal_tiles(
   update = FALSE,
   dry_run = TRUE,
   xyz = FALSE,
-  format = c("png", "jpeg")
+  format = c("png", "jpeg"),
+  write_html = TRUE,
+  minmaxzoom = NA,
+  title = "",
+  copyright = "copyright ..."
 )
 }
 \arguments{
@@ -37,12 +41,26 @@ gdal_tiles(
 \item{xyz}{is the zero-row tile to be at the top, then set this \code{TRUE}}
 
 \item{format}{'png' or 'jpeg'}
+
+\item{write_html}{\code{TRUE} by default, writes HTML index see Details}
+
+\item{minmaxzoom}{optional, two values to set the html index range independently of the rendered levels}
+
+\item{title}{title for HTML output}
+
+\item{copyright}{copyright statement for HTML output}
 }
 \value{
 the tile scheme, invisibly as a dataframe
 }
 \description{
-Create tiles, like gdal2tiles.py
+Create png or jpeg tiles from any GDAL DSN.
+}
+\details{
+Currently we write a leaflet.html by default. Note that if you run with 'update' with a
+different set of zooms in a previous run then the html will be overridden by a different
+min and/or max zoom setting. The zoom range can be set independently of the generated or
+existing tiles by using \code{minmaxzoom}.
 }
 \examples{
 dsn <- system.file("extdata/gebco_ovr5.vrt", package = "filearchy", mustWork = TRUE)
