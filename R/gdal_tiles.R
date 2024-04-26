@@ -41,7 +41,11 @@ write_tile <- function(tile, dataset,  overwrite = FALSE) {
 
 #' Create tiles, like gdal2tiles.py
 #'
-#' Create png or jpeg tiles from any GDAL DSN.
+#' Create png or jpeg tiles from any GDAL DSN in slippy map format, this consists of
+#' zoom level directories: 0/, 1/, 2/, etc that contain similar column diretories with
+#' row files in them. The format is "z/x/y.png" with combinations of `z = 0:maxzoom,
+#' x = 0:maxrow, y = 0:maxcol`. Not every possible combination will exist, only those
+#' that represent the data as input will be generated.
 #'
 #' Currently we write a leaflet.html by default. Note that if you run with 'update' with a
 #' different set of zooms in a previous run then the html will be overridden by a different
@@ -51,12 +55,12 @@ write_tile <- function(tile, dataset,  overwrite = FALSE) {
 #' @param zoom  zooms to render, can be a single number multiple (from 0:23)
 #' @param blocksize size of tiles, defaults to 256
 #' @param dsn input dataset, file path, VRT string, or any DSN GDAL can open and warp from
-#' @param update not implemented (please take care)
+#' @param update if `TRUE` do not create tiles if they already exist, `FALSE` by default and irrelevant if `overwrite=TRUE`
 #' @param output_dir directory to write to, by default a tempdir is used
-#' @param overwrite clobber the output directory, `FALSE` is the default
+#' @param overwrite clobber the output directory, delete it entirely if `TRUE`, `FALSE` is the default
 #' @param dry_run if `TRUE` only the scheme is built and returned as a data frame
 #' @param profile domain to use, 'mercator', 'geodetic' (longlat), or 'raster'
-#' @param xyz is the zero-row tile to be at the top, then set this `TRUE`
+#' @param xyz the row orientation default `FALSE` means row zero is at the bottom (TMS style),  if `TRUE` the zero row is at the top (XYZ style)
 #' @param format 'png' or 'jpeg'
 #' @param write_html `TRUE` by default, writes HTML index see Details
 #' @param title title for HTML output

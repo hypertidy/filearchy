@@ -32,13 +32,13 @@ gdal_tiles(
 
 \item{output_dir}{directory to write to, by default a tempdir is used}
 
-\item{overwrite}{clobber the output directory, \code{FALSE} is the default}
+\item{overwrite}{clobber the output directory, delete it entirely if \code{TRUE}, \code{FALSE} is the default}
 
-\item{update}{not implemented (please take care)}
+\item{update}{if \code{TRUE} do not create tiles if they already exist, \code{FALSE} by default and irrelevant if \code{overwrite=TRUE}}
 
 \item{dry_run}{if \code{TRUE} only the scheme is built and returned as a data frame}
 
-\item{xyz}{is the zero-row tile to be at the top, then set this \code{TRUE}}
+\item{xyz}{the row orientation default \code{FALSE} means row zero is at the bottom (TMS style),  if \code{TRUE} the zero row is at the top (XYZ style)}
 
 \item{format}{'png' or 'jpeg'}
 
@@ -54,7 +54,10 @@ gdal_tiles(
 the tile scheme, invisibly as a dataframe
 }
 \description{
-Create png or jpeg tiles from any GDAL DSN.
+Create png or jpeg tiles from any GDAL DSN in slippy map format, this consists of
+zoom level directories: 0/, 1/, 2/, etc that contain similar column diretories with
+row files in them. The format is "z/x/y.png" with combinations of \verb{z = 0:maxzoom, x = 0:maxrow, y = 0:maxcol}. Not every possible combination will exist, only those
+that represent the data as input will be generated.
 }
 \details{
 Currently we write a leaflet.html by default. Note that if you run with 'update' with a
