@@ -19,7 +19,7 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -54,7 +54,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="contents col-md-9">
@@ -105,102 +105,104 @@
 <span><span class="va">dsn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/gebco_ovr5.vrt"</span>, package <span class="op">=</span> <span class="st">"filearchy"</span>, mustWork <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">tiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gdal_tiles.html">gdal_tiles</a></span><span class="op">(</span><span class="va">dsn</span>, dry_run  <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "tiles in directory: /tmp/RtmpKpD0BY/fileace77665de22b"</span></span>
-<span></span>
+<span><span class="co">#&gt; [1] "tiles in directory: /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a"</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="co">#plan(sequential)</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/dir_ls.html" class="external-link">dir_ls</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">dirname</a></span><span class="op">(</span><span class="va">tiles</span><span class="op">$</span><span class="va">path</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, recurse <span class="op">=</span> <span class="cn">TRUE</span>, type <span class="op">=</span> <span class="st">"f"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/0/0/0.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/1/0/0.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/1/0/1.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/1/1/0.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/1/1/1.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/2/0/0.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/2/0/1.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/2/0/2.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/2/0/3.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/2/1/0.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/2/1/1.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/2/1/2.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/2/1/3.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/2/2/0.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/2/2/1.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/2/2/2.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/2/2/3.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/2/3/0.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/2/3/1.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/2/3/2.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/2/3/3.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/0/0.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/0/1.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/0/2.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/0/3.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/0/4.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/0/5.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/0/6.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/0/7.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/1/0.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/1/1.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/1/2.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/1/3.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/1/4.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/1/5.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/1/6.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/1/7.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/2/0.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/2/1.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/2/2.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/2/3.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/2/4.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/2/5.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/2/6.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/2/7.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/3/0.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/3/1.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/3/2.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/3/3.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/3/4.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/3/5.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/3/6.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/3/7.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/4/0.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/4/1.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/4/2.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/4/3.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/4/4.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/4/5.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/4/6.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/4/7.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/5/0.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/5/1.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/5/2.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/5/3.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/5/4.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/5/5.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/5/6.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/5/7.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/6/0.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/6/1.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/6/2.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/6/3.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/6/4.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/6/5.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/6/6.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/6/7.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/7/0.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/7/1.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/7/2.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/7/3.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/7/4.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/7/5.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/7/6.png</span></span>
-<span><span class="co">#&gt; /tmp/RtmpKpD0BY/fileace77665de22b/3/7/7.png</span></span></code></pre></div>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/0/0/0.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/1/0/0.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/1/0/1.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/1/1/0.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/1/1/1.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/0/0.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/0/1.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/0/2.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/0/3.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/1/0.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/1/1.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/1/2.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/1/3.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/2/0.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/2/1.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/2/2.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/2/3.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/3/0.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/3/1.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/3/2.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/3/3.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/0/0.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/0/1.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/0/2.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/0/3.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/0/4.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/0/5.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/0/6.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/0/7.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/1/0.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/1/1.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/1/2.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/1/3.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/1/4.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/1/5.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/1/6.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/1/7.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/2/0.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/2/1.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/2/2.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/2/3.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/2/4.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/2/5.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/2/6.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/2/7.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/3/0.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/3/1.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/3/2.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/3/3.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/3/4.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/3/5.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/3/6.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/3/7.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/4/0.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/4/1.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/4/2.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/4/3.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/4/4.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/4/5.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/4/6.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/4/7.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/5/0.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/5/1.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/5/2.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/5/3.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/5/4.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/5/5.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/5/6.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/5/7.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/6/0.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/6/1.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/6/2.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/6/3.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/6/4.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/6/5.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/6/6.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/6/7.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/7/0.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/7/1.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/7/2.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/7/3.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/7/4.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/7/5.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/7/6.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/7/7.png</span></span>
+<span><span class="co">#&gt; /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/leaflet.html</span></span></code></pre></div>
 <p>Now open the html index ** “leaflet.html” ** from that directory.</p>
 <p>Or, just do a dry_run:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">scheme</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gdal_tiles.html">gdal_tiles</a></span><span class="op">(</span><span class="va">dsn</span>,  zoom <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1,365 × 11</span></span>
 <span><span class="co">#&gt;     tile tile_col tile_row  zoom       xmin       xmax      ymin      ymax  ncol</span></span>
-<span><span class="co">#&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt;      &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt;  1     0        0        0     0 -20037508.  20037508. -2.0038e7  2.0038e7   256</span></span>
 <span><span class="co">#&gt;  2     2        0        0     1 -20037508.         0  -2.0038e7  0          256</span></span>
 <span><span class="co">#&gt;  3     3        1        0     1         0   20037508. -2.0038e7  0          256</span></span>
@@ -212,8 +214,9 @@
 <span><span class="co">#&gt;  9    15        3        0     2  10018754.  20037508. -2.0038e7 -1.0019e7   256</span></span>
 <span><span class="co">#&gt; 10     8        0        1     2 -20037508. -10018754. -1.0019e7  0          256</span></span>
 <span><span class="co">#&gt; # ℹ 1,355 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 2 more variables: nrow &lt;dbl&gt;, crs &lt;chr&gt;</span></span>
-<span></span>
+<span><span class="co">#&gt; # ℹ 2 more variables: nrow &lt;dbl&gt;, crs &lt;chr&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">scheme</span><span class="op">$</span><span class="va">xmin</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">scheme</span><span class="op">$</span><span class="va">xmax</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">scheme</span><span class="op">$</span><span class="va">ymin</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">scheme</span><span class="op">$</span><span class="va">ymax</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ex</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>, <span class="va">ex</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, asp <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
@@ -282,16 +285,16 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>
