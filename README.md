@@ -79,95 +79,99 @@ library(filearchy)
 dsn <- system.file("extdata/gebco_ovr5.vrt", package = "filearchy", mustWork = TRUE)
 
 tiles <- gdal_tiles(dsn, dry_run  = FALSE)
-#> [1] "tiles in directory: /tmp/RtmpKpD0BY/fileace77665de22b"
+#> [1] "tiles in directory: /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a"
+```
+
+``` r
 
 #plan(sequential)
 fs::dir_ls(dirname(dirname(dirname(tiles$path[1]))), recurse = TRUE, type = "f")
-#> /tmp/RtmpKpD0BY/fileace77665de22b/0/0/0.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/1/0/0.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/1/0/1.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/1/1/0.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/1/1/1.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/2/0/0.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/2/0/1.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/2/0/2.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/2/0/3.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/2/1/0.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/2/1/1.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/2/1/2.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/2/1/3.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/2/2/0.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/2/2/1.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/2/2/2.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/2/2/3.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/2/3/0.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/2/3/1.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/2/3/2.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/2/3/3.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/0/0.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/0/1.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/0/2.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/0/3.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/0/4.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/0/5.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/0/6.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/0/7.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/1/0.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/1/1.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/1/2.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/1/3.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/1/4.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/1/5.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/1/6.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/1/7.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/2/0.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/2/1.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/2/2.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/2/3.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/2/4.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/2/5.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/2/6.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/2/7.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/3/0.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/3/1.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/3/2.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/3/3.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/3/4.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/3/5.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/3/6.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/3/7.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/4/0.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/4/1.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/4/2.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/4/3.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/4/4.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/4/5.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/4/6.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/4/7.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/5/0.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/5/1.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/5/2.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/5/3.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/5/4.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/5/5.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/5/6.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/5/7.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/6/0.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/6/1.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/6/2.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/6/3.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/6/4.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/6/5.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/6/6.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/6/7.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/7/0.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/7/1.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/7/2.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/7/3.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/7/4.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/7/5.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/7/6.png
-#> /tmp/RtmpKpD0BY/fileace77665de22b/3/7/7.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/0/0/0.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/1/0/0.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/1/0/1.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/1/1/0.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/1/1/1.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/0/0.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/0/1.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/0/2.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/0/3.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/1/0.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/1/1.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/1/2.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/1/3.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/2/0.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/2/1.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/2/2.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/2/3.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/3/0.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/3/1.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/3/2.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/2/3/3.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/0/0.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/0/1.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/0/2.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/0/3.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/0/4.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/0/5.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/0/6.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/0/7.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/1/0.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/1/1.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/1/2.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/1/3.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/1/4.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/1/5.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/1/6.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/1/7.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/2/0.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/2/1.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/2/2.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/2/3.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/2/4.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/2/5.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/2/6.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/2/7.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/3/0.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/3/1.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/3/2.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/3/3.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/3/4.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/3/5.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/3/6.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/3/7.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/4/0.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/4/1.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/4/2.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/4/3.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/4/4.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/4/5.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/4/6.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/4/7.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/5/0.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/5/1.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/5/2.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/5/3.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/5/4.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/5/5.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/5/6.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/5/7.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/6/0.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/6/1.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/6/2.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/6/3.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/6/4.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/6/5.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/6/6.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/6/7.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/7/0.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/7/1.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/7/2.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/7/3.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/7/4.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/7/5.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/7/6.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/3/7/7.png
+#> /perm_storage/home/data/r_tmp/RtmpwtGuRD/file822756cdb250a/leaflet.html
 ```
 
 Now open the html index \*\* “leaflet.html” \*\* from that directory.
@@ -178,7 +182,7 @@ Or, just do a dry_run:
 (scheme <- gdal_tiles(dsn,  zoom = 0:5))
 #> # A tibble: 1,365 × 11
 #>     tile tile_col tile_row  zoom       xmin       xmax      ymin      ymax  ncol
-#>    <dbl>    <dbl>    <dbl> <int>      <dbl>      <dbl>     <dbl>     <dbl> <dbl>
+#>    <dbl>    <dbl>    <dbl> <dbl>      <dbl>      <dbl>     <dbl>     <dbl> <dbl>
 #>  1     0        0        0     0 -20037508.  20037508. -2.0038e7  2.0038e7   256
 #>  2     2        0        0     1 -20037508.         0  -2.0038e7  0          256
 #>  3     3        1        0     1         0   20037508. -2.0038e7  0          256
@@ -191,6 +195,9 @@ Or, just do a dry_run:
 #> 10     8        0        1     2 -20037508. -10018754. -1.0019e7  0          256
 #> # ℹ 1,355 more rows
 #> # ℹ 2 more variables: nrow <dbl>, crs <chr>
+```
+
+``` r
 
 ex <- c(min(scheme$xmin), max(scheme$xmax), min(scheme$ymin), max(scheme$ymax))
 plot(ex[1:2], ex[3:4], asp = 1)

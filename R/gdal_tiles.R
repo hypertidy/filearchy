@@ -16,6 +16,7 @@ tile_profile <- function(x = c("mercator", "geodetic", "raster"),
 plot_scheme <- function(x, max = 10000, add = FALSE, label = NULL, ...) {
   if (nrow(x) > max) stop("many many tiles in input > max: %i", max)
   if (!add) {
+
     ex <- c(min(x$xmin), max(x$xmax), min(x$ymin), max(x$ymax))
     vaster::plot_extent(ex, asp = 1)
   }
@@ -104,10 +105,9 @@ gdal_tiles <- function(dsn, zoom = NULL,
     zoom <- as.integer(unique(zoom))
     if (anyNA(zoom) || any(zoom < 0) || any(zoom > 24)) stop("unsupported zoom levels, make unique and within 0:23")
   }
-  if (is.null(minmaxzoom) || !is.numeric(minmaxzoom) || anyNA(minmaxzoom)) {
+  if ((is.null(minmaxzoom) || !is.numeric(minmaxzoom) || anyNA(minmaxzoom)) && !is.null(zoom)) {
     minmaxzoom <- range(zoom)
   }
-  minmaxzoom <- range(minmaxzoom)
   opt <- gdalraster::get_config_option("GDAL_PAM_ENABLED")
   gdalraster::set_config_option("GDAL_PAM_ENABLED", "NO")
   on.exit(gdalraster::set_config_option("GDAL_PAM_ENABLED", opt), add = TRUE)
@@ -178,7 +178,7 @@ blocksize <- rep(blocksize, length.out = 2L)
          profile = profile,
          xyz = xyz)))
   d <- tibble::as_tibble(d)
-
+d$crs <- tgt_crs
   if (dry_run) return(d)
 
   d$path <- file.path(output_dir, d$zoom, d$tile_col, sprintf(fileext, d$tile_row))
@@ -186,6 +186,7 @@ blocksize <- rep(blocksize, length.out = 2L)
   dirs <- dirname(d$path)
   fs::dir_create(sort(unique(dirs)), recurse = TRUE)
 
+  ## parallelized here if plan is other than future::plan(sequential)
   jk <- future_map(split(d, 1:nrow(d)), write_tile,
                    dataset = dsn, overwrite = overwrite)
 

@@ -12,7 +12,7 @@ Description: Create directory structure of image tiles.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports: 
     fs,
     furrr,
